@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/fournisseurs")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200 , https://angular-gray-mu.vercel.app")
 
 public class FournisseurController {
 

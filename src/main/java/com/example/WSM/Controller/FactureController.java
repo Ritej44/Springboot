@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/factures")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200 ,https://angular-gray-mu.vercel.app")
 public class FactureController {
 
     @Autowired

@@ -76,7 +76,7 @@ public class SecurityConfig  implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://angular-gray-mu.vercel.app/login"));
+        configuration.setAllowedOrigins(List.of("https://angular-gray-mu.vercel.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
 

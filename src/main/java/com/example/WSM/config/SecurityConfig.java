@@ -1,11 +1,19 @@
 package com.example.WSM.config;
 
+import com.example.WSM.Repository.UserRepository;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -15,8 +23,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig  implements WebMvcConfigurer {
+
+
+    private final UserRepository userRepository;
+
+    public SecurityConfig(UserRepository userRepository){
+        this.userRepository = userRepository;
+
+    }
 
 
     @Override
@@ -25,6 +42,7 @@ public class SecurityConfig  implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:4200")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
+                .exposedHeaders("Content-Disposition", "Content-Type")
                 .allowCredentials(true);
     }
 
@@ -37,9 +55,9 @@ public class SecurityConfig  implements WebMvcConfigurer {
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers(
-                                "api/**",
+                                "/api/**",
                                 "*",
-                                "api/factures",
+                                "/api/factures",
                                 "/api/fournisseurs")
                         .permitAll()
                         .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
@@ -51,6 +69,8 @@ public class SecurityConfig  implements WebMvcConfigurer {
 
         return http.build();
     }
+
+
 
 
     @Bean
@@ -73,5 +93,20 @@ public class SecurityConfig  implements WebMvcConfigurer {
                         "/static/**",
                         "/css/**",
                         "/js/**");
-    }}
+    }
+
+
+
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+}
  

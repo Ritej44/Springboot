@@ -27,7 +27,7 @@ public class Facture {
     private Double debit;
     @Field("crédit")
     private Double credit;
-    @Field ("NOTE")
+    @Field ("NOTE" )
     private String note;
     @Field("Id_fournisseur")
     private String idFournisseur;
@@ -35,12 +35,19 @@ public class Facture {
 
     private transient String fournisseurNom;
 
+    public String getStatut() {
+        if (note != null && note.toUpperCase().contains("PAYE")) {
+            return "Payée";
+        }
+        return "Non payée";
+    }
 
     // Méthode pour vérifier si la facture est payée
     public boolean isPayee() {
         if (note == null || note.trim().isEmpty()) {
             return false;
         }
+
 
         String noteUpper = note.toUpperCase();
 
@@ -82,6 +89,10 @@ public class Facture {
         return data;
     }
 
+    public Object getDate() {
+        return data;
+    }
+
     public void setData(String data) {
         this.data = data;
     }
@@ -89,7 +100,6 @@ public class Facture {
     public String getLibelle() {
         return libelle;
     }
-
     public void setLibelle(String libelle) {
         this.libelle = libelle;
     }

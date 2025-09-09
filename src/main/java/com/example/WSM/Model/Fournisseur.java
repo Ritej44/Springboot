@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @Getter
@@ -14,8 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Fournisseur {
     @Id
     private String id;
+    @Field("nom")
     private String nom;
-    private String service;
+    private String Service;
 
     public String getId() {
         return id;
@@ -34,10 +36,10 @@ public class Fournisseur {
     }
 
     public String getService() {
-        return service;
+        return Service;
     }
 
     public void setService(String service) {
-        this.service = service;
+        this.Service = service;
     }
 }

@@ -15,6 +15,16 @@ public interface FactureRepository extends MongoRepository<Facture, String> {
     // Trouver les factures non payées (note ne contenant pas "PAYE")
     List<Facture> findByNoteNotContainingIgnoreCase(String keyword);
 
+    @Query("{ 'NOTE': { $regex: ?0, $options: 'i' } }")
+    List<Facture> findByNoteContaining(String keyword);
+
+    default List<Facture> findFacturesWithPaye() {
+        return findByNoteContaining("PAYE");
+    }
+    default List<Facture> findFacturesNOTPaye() {
+        return findByNoteNotContainingIgnoreCase("PAYE");
+    }
+
     // Trouver les factures par fournisseur
     List<Facture> findByIdFournisseur(String idFournisseur);
 

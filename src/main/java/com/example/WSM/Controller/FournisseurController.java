@@ -23,12 +23,16 @@ public class FournisseurController {
         return fournisseurService.findAll();
     }
 
-    @GetMapping("/{id}")
-    public Fournisseur getFournisseurById(@PathVariable String id) {
-        return fournisseurService.findById(id);
+    @GetMapping("nom/{id}")
+    public Fournisseur getNomFournisseurById(@PathVariable String id) {
+        return fournisseurService.findnomById(id);
     }
 
-    @PostMapping
+    @GetMapping(path = "/search/{nom}")
+    public List<Fournisseur> getFournisseurByNom(@PathVariable String nom){
+        return fournisseurService.getFournisseurByNom(nom);}
+
+    @PostMapping  (path = "/create")
     public Fournisseur createFournisseur(@RequestBody Fournisseur fournisseur) {
         return fournisseurService.save(fournisseur);
     }

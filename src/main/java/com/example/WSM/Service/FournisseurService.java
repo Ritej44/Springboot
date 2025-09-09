@@ -21,6 +21,11 @@ public class FournisseurService {
         this.fournisseurRepository = fournisseurRepository;
     }
 
+    public List<Fournisseur> getFournisseurByNom(String nom){
+        return fournisseurRepository.findByNom(nom);
+
+    }
+
     /**
      * Récupère tous les fournisseurs
      * @return Liste de tous les fournisseurs
@@ -35,9 +40,8 @@ public class FournisseurService {
      * @return Fournisseur correspondant
      * @throws RuntimeException si le fournisseur n'est pas trouvé
      */
-    public Fournisseur findById(String id) {
-        return fournisseurRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Fournisseur non trouvé avec l'id: " + id));
+    public Fournisseur findnomById(String id) {
+        return fournisseurRepository.findNomById(id);
     }
 
     /**

@@ -1,7 +1,9 @@
 package com.example.WSM.Service;
 
 import com.example.WSM.Model.Facture;
+import com.example.WSM.Model.Paiement;
 import com.example.WSM.Repository.FactureRepository;
+import com.example.WSM.Repository.PaiementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,13 @@ public class FactureService {
 
     @Autowired
     private FactureRepository factureRepository;
+
+    private Facture facture;
+
+    private Paiement paiement;
+
+    @Autowired
+    private PaiementRepository paiementRepository;
 
     public List<Facture> findAll() {
         return factureRepository.findAll();
@@ -53,6 +62,21 @@ public class FactureService {
         return factureRepository.findByNoteNotContainingIgnoreCase("PAYE");
     }
 
+
+    // Récupérer toutes les factures avec "PAYE" dans la note
+    public List<Facture> getFacturesWithPaye() {
+        return factureRepository.findFacturesWithPaye();
+    }
+    public List<Facture> getFacturesNOTPaye() {
+        return factureRepository.findFacturesNOTPaye();
+    }
+
+    // Récupérer les factures par mot-clé dans la note
+    public List<Facture> getFacturesByNoteContent(String keyword) {
+        return factureRepository.findByNoteContaining(keyword);
+    }
+
+
     // Trouver les factures non payées
    // public List<Facture> findNonPayees() {
     //  return factureRepository.findByNoteNotContainingIgnoreCase("PAYE");
@@ -63,16 +87,33 @@ public class FactureService {
         return factureRepository.findByIdFournisseur(idFournisseur);
     }
 
-    // Payer une facture
-    public Facture payerFacture(String id, String notePaiement) {
+    public Facture payerFacture(String id, String notePaiement, String devise) {
         return factureRepository.findById(id)
                 .map(facture -> {
                     facture.setNote(notePaiement);
-                    // Ajouter un champ boolean payee dans le modèle si nécessaire
+                    facture.setCredit(facture.getDebit());
+
+                    // Récupérer le document Paiement depuis la base de données
+                    Paiement paiement = paiementRepository.findAll().stream().findFirst()
+                            .orElseThrow(() -> new RuntimeException("Aucun document Paiement trouvé"));
+
+                    // Mettre à jour le solde selon la devise
+                    if (devise.equalsIgnoreCase("DT")) {
+                        paiement.setSoldeDT(paiement.getSoldeDT() - facture.getDebit());
+                    } else if (devise.equalsIgnoreCase("EURO")) {
+                        paiement.setSoldeEURO(paiement.getSoldeEURO() - facture.getDebit());
+                    } else {
+                        throw new RuntimeException("Devise non valide : " + devise);
+                    }
+
+                    // Sauvegarder les modifications du paiement
+                    paiementRepository.save(paiement);
+
                     return factureRepository.save(facture);
                 })
                 .orElseThrow(() -> new RuntimeException("Facture non trouvée avec l'id: " + id));
     }
+
 
     // Créer une nouvelle facture
     public Facture save(Facture facture) {

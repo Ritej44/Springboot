@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: WSM
+    env: java
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/WSM-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: SPRING_DATA_MONGODB_URI
+        fromSecret: true
+    # runtime might not be needed depending on the platform
+    runtime: standard
+    plan: free

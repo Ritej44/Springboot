@@ -1,7 +1,8 @@
-package com.example.WSM.Service;
+package com.example.WSM.Service.Iplm;
 
 import com.example.WSM.Model.User;
 import com.example.WSM.Repository.UserRepository;
+import com.example.WSM.Service.UserService;
 import com.example.WSM.dto.LoginDTO;
 import com.example.WSM.dto.LoginMessage;
 import com.example.WSM.dto.userDTO;
@@ -21,20 +22,16 @@ public class UserIMPL implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Override
-    public String addUser(userDTO userDTO) {
-        User user = new User(
-                userDTO.getId(),
-                userDTO.getName(),
-                userDTO.getEmail(),
-                this.passwordEncoder.encode(userDTO.getPassword())
-        );
+    public String addUser(userDTO UserDTO) {
+        User user = new User();
+        user.setName(UserDTO.getName());
+        user.setEmail(UserDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(UserDTO.getPassword()));
+
         userRepository.save(user);
         return user.getName();
     }
-    userDTO userDTO;
-
 
     @Override
     public LoginMessage loginUser(LoginDTO loginDTO) { // Utilise `LoginMessage` et non `LoginMesage`
